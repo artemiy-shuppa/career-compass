@@ -1,18 +1,13 @@
 import json
 
-import requests
+from collector.HeadHunterCollector import HeadHunterCollector
 
 
 def main():
-    url = "https://api.hh.ru/vacancies"
-    params = {
-        "text": "DevOps",
-        "per_page": 2,
-    }
-
     try:
-        response = requests.get(url, params=params)
-        print(json.dumps(response.json(), ensure_ascii=False, indent=4))
+        collector = HeadHunterCollector()
+        vacancies = collector.collect("DevOps")
+        print(json.dumps(vacancies, ensure_ascii=False, indent=4))
 
     except Exception as e:
         print(f"Something goes wrong: {e}")
