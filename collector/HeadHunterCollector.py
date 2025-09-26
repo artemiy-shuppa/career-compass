@@ -7,7 +7,15 @@ class HeadHunterCollector:
 
         vacancies = response.json()["items"]
 
-        return vacancies
+        detailed_vacancy_list = []
+
+        ids = [vacancy["id"] for vacancy in vacancies]
+        for id in ids:
+            detailed_vacancy = self._get_detailed_vacancy(id)
+
+            detailed_vacancy_list.append(detailed_vacancy.json())
+
+        return detailed_vacancy_list
 
     def _get_vacancy_list(self, text: str) -> requests.Response:
         params = {
@@ -18,4 +26,10 @@ class HeadHunterCollector:
 
         url = "https://api.hh.ru/vacancies"
         response = requests.get(url, params=params)
+        return response
+
+    def _get_detailed_vacancy(self, vacancy_id: str) -> requests.Response:
+        url = f"https://api.hh.ru/vacancies/{vacancy_id}"
+        response = requests.get(url)
+
         return response
