@@ -1,3 +1,5 @@
+from typing import Dict
+
 import requests
 
 
@@ -13,7 +15,11 @@ class HeadHunterCollector:
         for id in ids:
             detailed_vacancy = self._get_detailed_vacancy(id)
 
-            detailed_vacancy_list.append(detailed_vacancy.json())
+            filtered_vacancy = HeadHunterCollector._filter_vacancy(
+                detailed_vacancy.json()
+            )
+
+            detailed_vacancy_list.append(filtered_vacancy)
 
         return detailed_vacancy_list
 
@@ -33,3 +39,14 @@ class HeadHunterCollector:
         response = requests.get(url)
 
         return response
+
+    @classmethod
+    def _filter_vacancy(cls, vacancy: Dict) -> Dict:
+        return {
+            "id": vacancy["id"],
+            "name": vacancy["name"],
+            "employer_name": vacancy["employer"]["name"],
+            "description": vacancy["description"],
+            "alternate_url": vacancy["alternate_url"],
+            "key_skills": vacancy["key_skills"],
+        }
