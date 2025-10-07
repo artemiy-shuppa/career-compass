@@ -1,10 +1,10 @@
 from datetime import datetime
-from formatter.MarkdownFormatter import MarkdownFormatter
 
 from dotenv import load_dotenv
 
-from analyzer.TechFrequencyAnalyzer import TechFrequencyAnalyzer
-from collector.HeadHunterCollector import HeadHunterCollector
+from analyzer.tech_frequency_analyzer import TechFrequencyAnalyzer
+from collector.head_hunter_collector import HeadHunterCollector
+from formatter.MarkdownFormatter import MarkdownFormatter
 from model.report_model import ReportContent, Title
 from sender.telegram_sender import TelegramSender
 

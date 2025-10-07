@@ -1,12 +1,10 @@
-from typing import Dict, List
-
 import pandas as pd
 
 from model.report_model import ReportItem, Table
 
 
 class TechFrequencyAnalyzer:
-    def analyze(self, vacancies: List[Dict]) -> List[ReportItem]:
+    def analyze(self, vacancies: list[dict]) -> list[ReportItem]:
         if not vacancies:
             return []
 
@@ -25,7 +23,8 @@ class TechFrequencyAnalyzer:
         rows = [
             (i, skill, count, f"{percentage:.1f}%")
             for i, (skill, count, percentage) in enumerate(
-                zip(skill_counts.index, skill_counts, skill_percentages), 1
+                zip(skill_counts.index, skill_counts, skill_percentages, strict=False),
+                1,
             )
         ]
 

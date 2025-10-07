@@ -1,6 +1,3 @@
-from typing import List, Tuple
-
-
 class ReportItem:
     pass
 
@@ -17,11 +14,11 @@ class Paragraph(ReportItem):
 
 
 class Table(ReportItem):
-    def __init__(self, headers: List[str], rows: List[Tuple]):
+    def __init__(self, headers: list[str], rows: list[tuple]):
         self.headers = headers
         self.rows = rows
 
 
 class ReportContent:
-    def __init__(self, sections: List[ReportItem]):
+    def __init__(self, sections: list[ReportItem]):
         self.sections = sections

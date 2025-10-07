@@ -1,5 +1,3 @@
-from typing import Dict
-
 import requests
 
 
@@ -41,7 +39,7 @@ class HeadHunterCollector:
         return response
 
     @classmethod
-    def _filter_vacancy(cls, vacancy: Dict) -> Dict:
+    def _filter_vacancy(cls, vacancy: dict) -> dict:
         return {
             "id": vacancy["id"],
             "name": vacancy["name"],
