@@ -1,7 +1,7 @@
 name: Career Compass CI/CD
 on:
   schedule:
-    - cron: '0 5 * * 1' # 5:00 UTC every Monday 
+    - cron: '0 5 * * 1' # 5:00 UTC every Monday
   workflow_dispatch:
 jobs:
   run-main-pipeline:
