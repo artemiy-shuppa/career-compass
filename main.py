@@ -17,8 +17,8 @@ def main():
         vacancies = collector.collect("DevOps")
 
         reports = []
-        date_time = datetime.now()
-        reports.append(Title(f"Report for {date_time}"))
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        reports.append(Title(f"Report for {timestamp}"))
 
         analyzer = TechFrequencyAnalyzer()
         reports.append(Title("TechFrequencyAnalyzer", level=2))
