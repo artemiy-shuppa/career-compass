@@ -10,6 +10,8 @@ from sender.telegram_sender import TelegramSender
 
 
 def main():
+    print("Hello")
+
     load_dotenv()
 
     try:
