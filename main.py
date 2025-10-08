@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import structlog
 from dotenv import load_dotenv
 
 from analyzer.tech_frequency_analyzer import TechFrequencyAnalyzer
@@ -10,11 +11,24 @@ from sender.telegram_sender import TelegramSender
 
 
 def main():
+    logger = structlog.get_logger()
+
     load_dotenv()
 
     try:
+        logger.info(
+            "Pipeline execution initiated",
+            event_type="pipeline_start",
+        )
+
         collector = HeadHunterCollector()
         vacancies = collector.collect("DevOps")
+        logger.info(
+            "Vacancies collected",
+            event_type="data_collection_complete",
+            source="hh.ru",
+            vacancies_found=len(vacancies),
+        )
 
         reports = []
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -23,23 +37,40 @@ def main():
         analyzer = TechFrequencyAnalyzer()
         reports.append(Title("TechFrequencyAnalyzer", level=2))
         reports.extend(analyzer.analyze(vacancies))
+        logger.info(
+            "Vacancies analyzed",
+            event_type="analysis_complete",
+        )
 
         formatter = MarkdownFormatter()
         final_result = formatter.format_report(ReportContent(reports))
 
         sender = TelegramSender()
         sender.send_message(final_result)
+        logger.info(
+            "Report sent",
+            event_type="report_sent_successfully",
+        )
 
     except Exception as e:
         try:
+            logger.error(
+                "Pipeline got an error",
+                event_type="pipeline_error",
+                error_type=type(e).__name__,
+                error_message=str(e),
+            )
             error_message = format_error_message(e)
             sender = TelegramSender()
             sender.send_message(error_message)
 
         except Exception as send_error:
-            print("Critical Error: can't send notification to telegram")
-            print(f"Initial Error: {e!r}")
-            print(f"Error sending to telegram: {send_error!r}")
+            logger.critical(
+                "Critical Error: can't send notification to telegram",
+                event_type="pipeline_error",
+                initial_error=f"{e!r}",
+                send_error=f"{send_error!r}",
+            )
 
 
 def format_error_message(e: Exception):
