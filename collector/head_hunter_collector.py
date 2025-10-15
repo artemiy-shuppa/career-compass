@@ -5,9 +5,7 @@ from config_schema import SearchParameters
 
 class HeadHunterCollector:
     def collect(self, config: SearchParameters):
-        response = self._get_vacancy_list(config.keywords, config.max_vacancies)
-
-        vacancies = response.json()["items"]
+        vacancies = self._get_vacancy_list(config.keywords, config.max_vacancies)
 
         detailed_vacancy_list = []
 
@@ -23,16 +21,41 @@ class HeadHunterCollector:
 
         return detailed_vacancy_list
 
-    def _get_vacancy_list(self, text: str, total: int) -> requests.Response:
-        params = {
-            "text": text,
-            "page": 0,
-            "per_page": total,
-        }
+    def _get_vacancy_list(
+        self, keywords: str, max_vacancies: int, max_per_page=100
+    ) -> list[dict]:
+        if max_vacancies < 0:
+            raise ValueError("Bad 'max_vacancies' value")
 
-        url = "https://api.hh.ru/vacancies"
-        response = requests.get(url, params=params)
-        return response
+        page = 0  # hh.ru starts from 0
+        elements_collected = 0
+        all_data = []
+
+        while elements_collected < max_vacancies:
+            remaining_elements = max_vacancies - elements_collected
+            current_per_page = min(remaining_elements, max_per_page)
+
+            params = {
+                "text": keywords,
+                "page": page,
+                "per_page": current_per_page,
+            }
+            url = "https://api.hh.ru/vacancies"
+            response = requests.get(url, params=params)
+
+            # Handle response
+            current_data = response.json()["items"]
+            all_data.extend(current_data)
+            elements_collected += len(current_data)
+
+            # Check for case when got less elements - meaning end of data
+            if len(current_data) < current_per_page:
+                break
+
+            page += 1
+
+        # return all we got
+        return all_data[:max_vacancies]
 
     def _get_detailed_vacancy(self, vacancy_id: str) -> requests.Response:
         url = f"https://api.hh.ru/vacancies/{vacancy_id}"
