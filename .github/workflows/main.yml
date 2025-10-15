@@ -14,17 +14,16 @@ jobs:
         run: |
           echo "${{ secrets.CONFIG_YML }}" > config.yml
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-          cache: 'pip'
+      - name: Setup docker
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: Build docker image
+        run: |
+          docker build -t career-compass .
 
-      - name: Run the main script
-        run: python main.py
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      - name: Run docker container
+        run: >
+          docker --rm
+            -e TELEGRAM_BOT_TOKEN="${{ secrets.TELEGRAM_BOT_TOKEN }}"
+            -e TELEGRAM_CHAT_ID="${{ secrets.TELEGRAM_CHAT_ID }}"
+            career-compass
+          }"
