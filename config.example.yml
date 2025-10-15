@@ -1,0 +1,6 @@
+search_parameters:
+  keywords: Cloud Engineer
+  max_vacancies: 10
+
+analysis_rules:
+  frequency_top_tech_limit: 20

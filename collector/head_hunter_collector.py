@@ -1,9 +1,11 @@
 import requests
 
+from config_schema import SearchParameters
+
 
 class HeadHunterCollector:
-    def collect(self, text: str):
-        response = self._get_vacancy_list(text=text)
+    def collect(self, config: SearchParameters):
+        response = self._get_vacancy_list(config.keywords, config.max_vacancies)
 
         vacancies = response.json()["items"]
 
@@ -21,11 +23,11 @@ class HeadHunterCollector:
 
         return detailed_vacancy_list
 
-    def _get_vacancy_list(self, text: str) -> requests.Response:
+    def _get_vacancy_list(self, text: str, total: int) -> requests.Response:
         params = {
             "text": text,
             "page": 0,
-            "per_page": 10,
+            "per_page": total,
         }
 
         url = "https://api.hh.ru/vacancies"

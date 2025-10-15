@@ -8,3 +8,6 @@ venv
 # Python cache
 __pycache__/
 *.pic
+
+# Configuraion
+config.yml

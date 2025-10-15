@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 from analyzer.tech_frequency_analyzer import TechFrequencyAnalyzer
 from collector.head_hunter_collector import HeadHunterCollector
+from config_schema import ConfigSchema
 from formatter.MarkdownFormatter import MarkdownFormatter
 from model.report_model import ReportContent, Title
 from sender.telegram_sender import TelegramSender
@@ -16,13 +17,16 @@ def main():
     load_dotenv()
 
     try:
+        config = ConfigSchema.from_yaml("config.yml")
+        logger.info("Config loaded", event_type="config_loaded")
+
         logger.info(
             "Pipeline execution initiated",
             event_type="pipeline_start",
         )
 
         collector = HeadHunterCollector()
-        vacancies = collector.collect("DevOps")
+        vacancies = collector.collect(config.search_parameters)
         logger.info(
             "Vacancies collected",
             event_type="data_collection_complete",
@@ -36,7 +40,7 @@ def main():
 
         analyzer = TechFrequencyAnalyzer()
         reports.append(Title("TechFrequencyAnalyzer", level=2))
-        reports.extend(analyzer.analyze(vacancies))
+        reports.extend(analyzer.analyze(vacancies, config.analysis_rules))
         logger.info(
             "Vacancies analyzed",
             event_type="analysis_complete",

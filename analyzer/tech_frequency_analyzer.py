@@ -1,10 +1,11 @@
 import pandas as pd
 
+from config_schema import AnalysisRules
 from model.report_model import ReportItem, Table
 
 
 class TechFrequencyAnalyzer:
-    def analyze(self, vacancies: list[dict]) -> list[ReportItem]:
+    def analyze(self, vacancies: list[dict], config: AnalysisRules) -> list[ReportItem]:
         if not vacancies:
             return []
 
@@ -14,7 +15,9 @@ class TechFrequencyAnalyzer:
             for skill in vac.get("key_skills", [])
         ]
 
-        skill_counts = pd.Series(skills).value_counts().nlargest(20)
+        skill_counts = (
+            pd.Series(skills).value_counts().nlargest(config.frequency_top_tech_limit)
+        )
 
         total_vacancies = len(vacancies)
 

@@ -1,4 +1,6 @@
 dotenv
 pandas
+pydantic
+pyyaml
 requests
 structlog
