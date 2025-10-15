@@ -1,3 +1,7 @@
+[tool.deptry]
+requirements_files = ["requirements.in"]
+requirements_files_dev = ["requirements-dev.in"]
+
 [tool.black]
 target-version = ['py310']
 line-length = 88

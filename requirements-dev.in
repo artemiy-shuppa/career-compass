@@ -1,6 +1,7 @@
 -r requirements.in
 
 black
+deptry
 pip-tools
 pre-commit
 ruff
