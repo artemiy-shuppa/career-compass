@@ -2,6 +2,10 @@
 .venv
 venv
 
+# direnv
+.direnv
+.envrc.local
+
 # Environment variables
 .env
 
